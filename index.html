@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Water Education System - ITB Jatinangor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e0a;
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Futuristic background effect */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, rgba(75, 107, 68, 0.1) 0%, rgba(10, 14, 10, 0.95) 100%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(75, 107, 68, 0.03) 2px, rgba(75, 107, 68, 0.03) 4px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        /* Futuristic Header */
+        header {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.2) 0%, rgba(10, 14, 10, 0.9) 100%);
+            border: 2px solid #4b6b44;
+            border-radius: 20px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 0 40px rgba(75, 107, 68, 0.3), inset 0 0 30px rgba(75, 107, 68, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(75, 107, 68, 0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        header h1 {
+            font-size: 3em;
+            color: #a8d5a3;
+            text-shadow: 0 0 20px rgba(168, 213, 163, 0.5), 0 0 40px rgba(75, 107, 68, 0.3);
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: #8fb88a;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glowing line separator */
+        .glow-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4b6b44, transparent);
+            box-shadow: 0 0 10px #4b6b44;
+            margin: 30px 0;
+        }
+
+        /* Stats Grid - Futuristic Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.15) 0%, rgba(10, 14, 10, 0.8) 100%);
+            border: 2px solid #4b6b44;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(75, 107, 68, 0.2);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(168, 213, 163, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            border-color: #a8d5a3;
+            box-shadow: 0 10px 40px rgba(75, 107, 68, 0.4);
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #a8d5a3;
+            text-shadow: 0 0 20px rgba(168, 213, 163, 0.5);
+            margin: 15px 0;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #8fb88a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Section styling */
+        .section {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.1) 0%, rgba(10, 14, 10, 0.7) 100%);
+            border: 1px solid #4b6b44;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 30px rgba(75, 107, 68, 0.2);
+        }
+
+        h2 {
+            color: #a8d5a3;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(168, 213, 163, 0.3);
+            border-bottom: 3px solid #4b6b44;
+            padding-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            color: #8fb88a;
+            font-size: 1.8em;
+            margin: 30px 0 20px 0;
+            text-shadow: 0 0 5px rgba(143, 184, 138, 0.3);
+        }
+
+        h4 {
+            color: #a8d5a3;
+            font-size: 1.4em;
+            margin: 20px 0 15px 0;
+        }
+
+        p, li {
+            line-height: 1.9;
+            color: #c8d9c5;
+            font-size: 1.05em;
+            margin-bottom: 15px;
+        }
+
+        /* Tab Navigation - Futuristic */
+        .tab-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.2) 0%, rgba(10, 14, 10, 0.8) 100%);
+            border: 2px solid #4b6b44;
+            border-radius: 30px;
+            color: #8fb88a;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(168, 213, 163, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .tab-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .tab-btn:hover {
+            border-color: #a8d5a3;
+            color: #a8d5a3;
+            box-shadow: 0 0 20px rgba(75, 107, 68, 0.5);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #4b6b44 0%, #2d4228 100%);
+            color: #a8d5a3;
+            border-color: #a8d5a3;
+            box-shadow: 0 0 30px rgba(168, 213, 163, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.1) 0%, rgba(10, 14, 10, 0.6) 100%);
+            border: 2px solid #4b6b44;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 25px rgba(75, 107, 68, 0.2);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        /* Info Boxes */
+        .insight-box, .recommendation, .highlight-box, .intelligence-box {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.15) 0%, rgba(10, 14, 10, 0.7) 100%);
+            border-left: 5px solid #4b6b44;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(75, 107, 68, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .insight-box:hover, .recommendation:hover, .highlight-box:hover, .intelligence-box:hover {
+            border-left-color: #a8d5a3;
+            box-shadow: 0 8px 30px rgba(75, 107, 68, 0.3);
+            transform: translateX(5px);
+        }
+
+        .intelligence-box {
+            border-left: 5px solid #a8d5a3;
+            background: linear-gradient(135deg, rgba(168, 213, 163, 0.1) 0%, rgba(10, 14, 10, 0.7) 100%);
+        }
+
+        /* Solution Cards */
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.2) 0%, rgba(10, 14, 10, 0.8) 100%);
+            border: 2px solid #4b6b44;
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 213, 163, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .solution-card:hover::after {
+            opacity: 1;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: #a8d5a3;
+            box-shadow: 0 15px 50px rgba(75, 107, 68, 0.4);
+        }
+
+        .solution-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .solution-title {
+            color: #a8d5a3;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-top: 15px;
+        }
+
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 10px;
+        }
+
+        li::before {
+            content: '▹';
+            color: #4b6b44;
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+        }
+
+        /* Conclusion Box */
+        .conclusion-summary {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.3) 0%, rgba(10, 14, 10, 0.9) 100%);
+            border: 3px solid #a8d5a3;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            box-shadow: 0 10px 50px rgba(168, 213, 163, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .conclusion-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(75, 107, 68, 0.05) 10px,
+                rgba(75, 107, 68, 0.05) 20px
+            );
+            pointer-events: none;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, rgba(75, 107, 68, 0.2) 0%, rgba(10, 14, 10, 0.95) 100%);
+            border-top: 2px solid #4b6b44;
+            color: #8fb88a;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0e0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4b6b44;
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8d5a3;
+        }
+
+        /* Intelligence Level Indicator */
+        .intelligence-level {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(75, 107, 68, 0.1);
+            border-radius: 10px;
+            border: 1px solid #4b6b44;
+        }
+
+        .level-bar {
+            flex: 1;
+            height: 30px;
+            background: rgba(10, 14, 10, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #4b6b44;
+        }
+
+        .level-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4b6b44, #a8d5a3);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(168, 213, 163, 0.5);
+            animation: fillAnimation 2s ease-out;
+        }
+
+        @keyframes fillAnimation {
+            from { width: 0; }
+        }
+
+        .level-label {
+            color: #a8d5a3;
+            font-weight: bold;
+            min-width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+    
+    <div class="container">
+        <header>
+            <h1>💧 SMART WATER INTELLIGENCE SYSTEM</h1>
+            <p>Advanced Educational Platform for Sustainable Water Management</p>
+            <p style="font-size: 0.9em; margin-top: 10px; opacity: 0.8;">ITB Jatinangor Campus - Digital Transformation Initiative</p>
+        </header>
+
+        <!-- Statistics Overview -->
+        <div class="section">
+            <h2>📊 INTELLIGENCE METRICS OVERVIEW</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Respondents</div>
+                    <div class="stat-number">21</div>
+                    <div class="stat-label">S1 ITB Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Water Facility Usage</div>
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Water Management Knowledge</div>
+                    <div class="stat-number">33%</div>
+                    <div class="stat-label">Current Understanding</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Digital Literacy Score</div>
+                    <div class="stat-number">4.5</div>
+                    <div class="stat-label">out of 5.0</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glow-line"></div>
+
+        <!-- Tab Navigation -->
+        <div class="section">
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="showTab('intelligence')">🧠 PENCERDASAN MENDALAM</button>
+                <button class="tab-btn" onclick="showTab('solutions')">💡 SOLUSI PENCERDASAN</button>
+                <button class="tab-btn" onclick="showTab('visualization')">📈 VISUALISASI DATA</button>
+                <button class="tab-btn" onclick="showTab('conclusion')">✅ KESIMPULAN & DAMPAK</button>
+            </div>
+
+            <!-- Tab: Deep Intelligence Analysis -->
+            <div id="intelligence" class="tab-content active">
+                <h2>🧠 ANALISIS PENCERDASAN MENDALAM</h2>
+                
+                <div class="intelligence-box">
+                    <h3>Konsep Pencerdasan dalam Konteks Water Security</h3>
+                    <p><strong>Pencerdasan (Intelligence Enhancement)</strong> adalah proses sistematis untuk meningkatkan kapasitas kognitif, kesadaran kritis, dan kompetensi praktis individu atau kelompok dalam memahami, menganalisis, dan merespons isu kompleks—dalam hal ini, pengelolaan air bersih dan ketahanan air.</p>
+                    
+                    <div class="intelligence-level">
+                        <div class="level-label">Level Pencerdasan Saat Ini:</div>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width: 33%;"></div>
+                        </div>
+                        <div class="level-label">33% (Dasar)</div>
+                    </div>
+                    
+                    <div class="intelligence-level">
+                        <div class="level-label">Target Pencerdasan:</div>
+                        <div class="level-bar">
+                            <div class="level-fill" style="width: 85%;"></div>
+                        </div>
+                        <div class="level-label">85% (Mahir)</div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h3>📚 Dimensi Pencerdasan Water Literacy</h3>
+                    
+                    <h4>1. Pencerdasan Kognitif (Cognitive Intelligence)</h4>
+                    <p><strong>Definisi:</strong> Pemahaman mendalam tentang siklus air, sistem pengelolaan, teknologi pengolahan, dan dampak lingkungan.</p>
+                    <p><strong>Gap Saat Ini:</strong> Hanya 33% mahasiswa yang memahami sistem WTP (Water Treatment Plant) di ITB Jatinangor.</p>
+                    <p><strong>Target Pencerdasan:</strong></p>
+                    <ul>
+                        <li>Memahami proses koagulasi, flokulasi, sedimentasi, filtrasi, dan disinfeksi dalam WTP</li>
+                        <li>Mengerti parameter kualitas air (pH, TDS, turbidity, mikrobiologi)</li>
+                        <li>Menguasai konsep water footprint dan virtual water</li>
+                        <li>Memahami hubungan antara water security dengan food security dan energy security (Water-Food-Energy Nexus)</li>
+                    </ul>
+
+                    <h4>2. Pencerdasan Kritis (Critical Intelligence)</h4>
+                    <p><strong>Definisi:</strong> Kemampuan menganalisis isu keairan secara multidimensi dan mengidentifikasi akar permasalahan.</p>
+                    <p><strong>Gap Saat Ini:</strong> Mahasiswa menyadari dampak air kotor tetapi belum memahami sistem penyebab struktural.</p>
+                    <p><strong>Target Pencerdasan:</strong></p>
+                    <ul>
+                        <li>Menganalisis hubungan antara urbanisasi, deforestasi, dan krisis air</li>
+                        <li>Mengevaluasi kebijakan pemerintah dalam pengelolaan air (strengths & weaknesses)</li>
+                        <li>Mengidentifikasi konflik kepentingan dalam distribusi air (equity issues)</li>
+                        <li>Memahami dampak perubahan iklim terhadap ketersediaan air</li>
+                        <li>Mengkritisi model konsumsi air yang tidak berkelanjutan</li>
+                    </ul>
+
+                    <h4>3. Pencerdasan Emosional (Emotional Intelligence)</h4>
+                    <p><strong>Definisi:</strong> Pengembangan empati, tanggung jawab moral, dan motivasi intrinsik untuk bertindak.</p>
+                    <p><strong>Gap Saat Ini:</strong> Kesadaran ada, tetapi belum terwujud dalam perubahan perilaku konsisten.</p>
+                    <p><strong>Target Pencerdasan:</strong></p>
+                    <ul>
+                        <li>Mengembangkan empati terhadap komunitas yang mengalami krisis air</li>
+                        <li>Membangun sense of urgency tanpa menimbulkan eco-anxiety</li>
+                        <li>Menumbuhkan rasa kepemilikan (ownership) terhadap sumber daya air</li>
+                        <li>Mengintegrasikan nilai-nilai keberlanjutan dalam identitas pribadi</li>
+                    </ul>
+
+                    <h4>4. Pencerdasan Praktikal (Practical Intelligence)</h4>
+                    <p><strong>Definisi:</strong> Kompetensi dalam menerapkan pengetahuan menjadi tindakan konkret dan solusi inovatif.</p>
+                    <p><strong>Gap Saat Ini:</strong> Pengetahuan belum ditransformasi menjadi praktik hemat air yang konsisten.</p>
+                    <p><strong>Target Pencerdasan:</strong></p>
+                    <ul>
+                        <li>Mampu menghitung dan memonitor personal water footprint</li>
+                        <li>Menguasai teknik konservasi air (rainwater harvesting, greywater recycling)</li>
+                        <li>Dapat melakukan audit penggunaan air dan mengidentifikasi pemborosan</li>
+                        <li>Mampu mengadvokasi kebijakan kampus yang pro-water sustainability</li>
+                        <li>Mengembangkan inovasi teknologi sederhana untuk efisiensi air</li>
+                    </ul>
+
+                    <h4>5. Pencerdasan Sosial (Social Intelligence)</h4>
+                    <p><strong>Definisi:</strong> Kemampuan berkolaborasi, mengomunikasikan isu, dan memobilisasi aksi kolektif.</p>
+                    <p><strong>Gap Saat Ini:</strong> Isu air masih dipersepsikan sebagai tanggung jawab individual, bukan kolektif.</p>
+                    <p><strong>Target Pencerdasan:</strong></p>
+                    <ul>
+                        <li>Mampu mengkomunikasikan isu water security secara persuasif</li>
+                        <li>Membangun komunitas praktik (community of practice) untuk water conservation</li>
+                        <li>Mengorganisir kampanye dan gerakan sosial berbasis data</li>
+                        <li>Berkolaborasi lintas disiplin untuk solusi holistik</li>
+                    </ul>
+                </div>
+
+                <div class="insight-box">
+                    <h3>🔬 Analisis Gap Pencerdasan</h3>
+                    <p><strong>Temuan Kritis:</strong> Terdapat kesenjangan 52% antara level pencerdasan saat ini (33%) dengan target optimal (85%). Kesenjangan ini mencakup:</p>
+                    
+                    <p><strong>Gap 1: Pengetahuan Teknis (67% tidak memahami)</strong></p>
+                    <ul>
+                        <li>Mayoritas mahasiswa tidak tahu tentang WTP di kampus</li>
+                        <li>Pemahaman tentang proses pengolahan air sangat terbatas</li>
+                        <li>Kurangnya eksposur terhadap teknologi water treatment</li>
+                    </ul>
+
+                    <p><strong>Gap 2: Kesadaran Sistemik (85% tidak mengetahui upaya institusional)</strong></p>
+                    <ul>
+                        <li>Mahasiswa tidak aware terhadap program kampus (water free refill, dll)</li>
+                        <li>Disconnect antara individu dengan kebijakan institusional</li>
+                        <li>Kurangnya transparansi informasi dari pihak kampus</li>
+                    </ul>
+
+                    <p><strong>Gap 3: Transformasi Perilaku (Belum terukur)</strong></p>
+                    <ul>
+                        <li>Pengetahuan belum ditranslasi menjadi habit perubahan</li>
+                        <li>Tidak ada mekanisme monitoring dan reinforcement</li>
+                        <li>Belum ada sistem insentif untuk perilaku berkelanjutan</li>
+                    </ul>
+                </div>
+
+                <div class="intelligence-box">
+                    <h3>🎯 Framework Pencerdasan Holistik</h3>
+                    <p>Model pencerdasan yang efektif harus mengintegrasikan pendekatan multi-level:</p>
+                    
+                    <p><strong>Level 1: Individual Intelligence</strong></p>
+                    <ul>
+                        <li>Self-awareness tentang water consumption patterns</li>
+                        <li>Personal commitment untuk behavior change</li>
+                        <li>Continuous learning dan skill development</li>
+                    </ul>
+
+                    <p><strong>Level 2: Collective Intelligence</strong></p>
+                    <ul>
+                        <li>Peer learning dan knowledge sharing</li>
+                        <li>Community-based monitoring dan accountability</li>
+                        <li>Collaborative problem-solving</li>
+                    </ul>
+
+                    <p><strong>Level 3: Systemic Intelligence</strong></p>
+                    <ul>
+                        <li>Memahami interconnection antar sistem (water, energy, food)</li>
+                        <li>Thinking in feedback loops dan long-term consequences</li>
+                        <li>Policy literacy dan advocacy capability</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab: Intelligence Solutions -->
+            <div id="solutions" class="tab-content">
+                <h2>💡 SOLUSI PENCERDASAN INOVATIF</h2>
+
+                <div class="highlight-box">
+                    <h3>🚀 Strategi Pencerdasan Berbasis Teknologi Digital</h3>
+                    <p>Memanfaatkan literasi digital mahasiswa yang tinggi (4.5/5) untuk akselerasi pencerdasan:</p>
+                </div>
+
+                <div class="solution-grid">
+                    <div class="solution-card">
+                        <span class="solution-icon">🌐</span>
+                        <div class="solution-title">1. Smart Water Intelligence Platform</div>
+                        <p><strong>Konsep:</strong> Website interaktif berbasis AI dengan fitur personalisasi pembelajaran</p>
+                        <p><strong>Fitur Unggulan:</strong></p>
+                        <ul>
+                            <li><strong>Virtual WTP Tour:</strong> Simulasi 3D proses pengolahan air di ITB dengan narasi interaktif</li>
+                            <li><strong>Water Footprint Calculator:</strong> Tool untuk menghitung jejak air personal dengan rekomendasi otomatis</li>
+                            <li><strong>Real-time Dashboard:</strong> Monitoring kualitas dan kuantitas air kampus secara live</li>
+                            <li><strong>Gamification:</strong> Badge system, leaderboard, dan challenges untuk mendorong kompetisi sehat</li>
+                            <li><strong>AI Chatbot:</strong> Asisten virtual 24/7 untuk menjawab pertanyaan tentang water management</li>
+                        </ul>
+                        <p><strong>Dampak Expected:</strong> Meningkatkan pemahaman teknis dari 33% ke 75% dalam 6 bulan</p>
+                    </div>
